@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+
+    <h1>Página 2</h1>
+
+    <p>Comprueba que el carrito sigue guardado.</p>
+
+    <button onclick="verCarrito()">Ver carrito</button>
+
+    <p><a href="index.html">Volver al index</a></p>
+
+    <script>
+
+        function getCookie(nombre) {
+            let cookies = document.cookie.split(";");
+
+            for (let i = 0; i < cookies.length; i++) {
+                let cookie = cookies[i].trim();
+
+                if (cookie.indexOf(nombre + "=") == 0) {
+                    return cookie.substring(nombre.length + 1);
+                }
+            }
+
+            return "";
+        }
+
+        function leerCarrito() {
+            let valor = getCookie("carrito");
+
+            if (valor == "") {
+                return [];
+            }
+
+            return JSON.parse(decodeURIComponent(valor));
+        }
+
+        function verCarrito() {
+            let carrito = leerCarrito();
+            let total = 0;
+
+            console.log("TU CARRITO");
+
+            if (carrito.length == 0) {
+                console.log("El carrito está vacío");
+            }
+
+            for (let i = 0; i < carrito.length; i++) {
+                console.log(carrito[i].cantidad + " " + carrito[i].descripcion);
+
+                total = total + carrito[i].cantidad;
+            }
+
+            console.log("TOTAL DE PRODUCTOS: " + total);
+        }
+
+    </script>
+
+</body>
+</html>

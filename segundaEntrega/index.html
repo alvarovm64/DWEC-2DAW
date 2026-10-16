@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+
+    <h1>Carrito de la compra</h1>
+
+    <label>Cantidad:</label>
+    <input type="text" id="cantidad">
+    <br><br>
+    <label>Descripción:</label>
+    <input type="text" id="descripcion">
+    <br><br>
+    <button onclick="comprarProducto()">Añadir al carrito</button>
+    <button onclick="verCarrito()">Ver carrito</button>
+    <p><a href="Pagina2.html">Ir a la página 2</a></p>
+
+    <script>
+        function setCookie(nombre, valor, dias) {
+            let fecha = new Date();
+            fecha.setTime(fecha.getTime() + dias * 24 * 60 * 60 * 1000);
+
+            document.cookie = nombre + "=" + valor +
+                ";expires=" + fecha.toUTCString() + ";path=/";
+        }
+
+        function getCookie(nombre) {
+            let cookies = document.cookie.split(";");
+
+            for (let i = 0; i < cookies.length; i++) {
+                let cookie = cookies[i].trim();
+
+                if (cookie.indexOf(nombre + "=") == 0) {
+                    return cookie.substring(nombre.length + 1);
+                }
+            }
+
+            return "";
+        }
+
+        function leerCarrito() {
+            let valor = getCookie("carrito");
+
+            if (valor == "") {
+                return [];
+            }
+            
+            //la siguiente linea me la sugirió la IA, ya que no sabía como avanzar
+            return JSON.parse(decodeURIComponent(valor));
+        }
+
+        function guardarCarrito(carrito) {
+            let datos = JSON.stringify(carrito);
+            setCookie("carrito", encodeURIComponent(datos), 7);
+        }
+
+        function comprarProducto() {
+            let cantidad = parseInt(document.getElementById("cantidad").value);
+            let descripcion = document.getElementById("descripcion").value;
+
+            if (isNaN(cantidad) || cantidad <= 0 || descripcion == "") {
+                alert("Introduce una cantidad y una descripción válidas");
+            } else {
+                let carrito = leerCarrito();
+
+                let producto = {
+                    cantidad: cantidad,
+                    descripcion: descripcion
+                };
+
+                carrito.push(producto);
+                guardarCarrito(carrito);
+
+                document.getElementById("cantidad").value = "";
+                document.getElementById("descripcion").value = "";
+
+                alert("Producto añadido");
+            }
+        }
+
+        function verCarrito() {
+            let carrito = leerCarrito();
+            let total = 0;
+
+            console.log("TU CARRITO");
+
+            if (carrito.length == 0) {
+                console.log("El carrito está vacío");
+            }
+
+            for (let i = 0; i < carrito.length; i++) {
+                console.log(carrito[i].cantidad + " " + carrito[i].descripcion);
+                total = total + carrito[i].cantidad;
+            }
+
+            console.log("TOTAL DE PRODUCTOS: " + total);
+        }
+
+    </script>
+
+</body>
+</html>
